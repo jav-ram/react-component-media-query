@@ -1,8 +1,8 @@
 import { useContext, useEffect, useMemo, useRef } from "react";
 import { Grid } from "@mui/material";
 
-import ContainerContext from "../../components/ContainerProvider/context";
-import { useContainerSize } from "../../components/ContainerProvider/hooks";
+import BatchMediaContainerContext from "../../components/BatchMediaContainer/context";
+import { useContainerSize } from "../../components/BatchMediaContainer/hooks";
 
 const Cell = () => {
   return <Grid size="grow" sx={{ borderRadius: '6px', backgroundColor: 'white', opacity: '.4' }} />
@@ -11,7 +11,7 @@ const Cell = () => {
 type ItemPropType = { id: string, size: number };
 const Item = ({ id, size }: ItemPropType) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { register, unregister, getDimensions } = useContext(ContainerContext);
+  const { register, unregister, getDimensions } = useContext(BatchMediaContainerContext);
   // const { width } = getDimensions(id);
   const { width } = useContainerSize(id);
 

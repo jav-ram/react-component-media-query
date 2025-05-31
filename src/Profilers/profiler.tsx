@@ -1,8 +1,8 @@
 import { Profiler, ProfilerOnRenderCallback } from "react";
 import Row from "../stories/ContainerProviderStory/Row";
-import ContainerProvider from "../components/ContainerProvider";
+import ContainerProvider from "../components/BatchMediaContainer";
 import { Grid } from "@mui/material";
-import FrameRequestContainerProvider from "../components/ContainerProvider";
+import FrameRequestContainerProvider from "../components/BatchMediaContainer";
 
 const ProfileTest = () => {
   const onRender: ProfilerOnRenderCallback = (id, phase, actualDuration) => {
@@ -11,13 +11,13 @@ const ProfileTest = () => {
 
   return (
     <Profiler id="ContainerMediaStressTest" onRender={onRender}>
-      <FrameRequestContainerProvider>
-        <Grid container spacing="8px">
-          {[...Array(500)].map((_, i) => (
+      {[...Array(1000)].map((_, i) => (
+        <FrameRequestContainerProvider>
+          <Grid container spacing="8px">
             <Row rowIndex={i} />
-          ))}
-        </Grid>
-      </FrameRequestContainerProvider>
+          </Grid>
+        </FrameRequestContainerProvider>
+      ))}
     </Profiler>
   );
 }

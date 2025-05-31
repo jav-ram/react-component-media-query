@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import ContainerProvider from '../../components/ContainerProvider';
+import ContainerProvider from '../../components/BatchMediaContainer';
 import { Grid } from '@mui/material';
 
 import Row from './Row';
@@ -16,7 +16,7 @@ const GridProvider = () => {
   return (
     <ContainerProvider>
       <Grid container spacing="8px">
-        {Array(100).fill(0).map((v, i) => i).map((v) => (
+        {Array(1000).fill(0).map((_, i) => i).map((v) => (
           <Row rowIndex={v} />
         ))}
       </Grid>
