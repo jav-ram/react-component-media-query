@@ -2,7 +2,7 @@ import { Profiler, ProfilerOnRenderCallback } from "react";
 import Row from "../stories/ContainerProviderStory/Row";
 import ContainerProvider from "../components/ContainerProvider";
 import { Grid } from "@mui/material";
-import FrameRequestContainerProvider from "../components/ContainerProvider/frameRequest";
+import FrameRequestContainerProvider from "../components/ContainerProvider";
 
 const ProfileTest = () => {
   const onRender: ProfilerOnRenderCallback = (id, phase, actualDuration) => {
