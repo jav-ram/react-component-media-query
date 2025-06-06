@@ -13,24 +13,6 @@ export type ContainerMediaPropsType<T extends ElementType> = {
   containerType?: CSSProperties['containerType'],
 } & ComponentProps<T>;
 
-const useOnScreen = (ref: RefObject<HTMLElement>) => {
-
-  const [isIntersecting, setIntersecting] = useState(false)
-  const isOnScreenRef = useRef(false);
-
-  const observer = useMemo(() => new IntersectionObserver(
-    ([entry]) => isOnScreenRef.current = entry.isIntersecting
-  ), [ref])
-
-
-  useEffect(() => {
-    observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
-
-  return isOnScreenRef
-}
-
 type ContainerProviderPropsType<T extends ElementType> = ContainerMediaPropsType<T>;
 const MediaContainer = forwardRef(
   // FIXME
@@ -50,7 +32,7 @@ const MediaContainer = forwardRef(
       ...rest
     } = props;
 
-    const [size, setSize] = useState<ContainerDimensions>({ width: 0, height: 0 });
+    const [dimension, setDimension] = useState<ContainerDimensions>({ width: 0, height: 0 });
     const containerRef = useRef<HTMLElement>(null);
     const observerRef = useRef<ResizeObserver>(null);
 
@@ -78,9 +60,9 @@ const MediaContainer = forwardRef(
         for (const entry of entries) {
           if (!isOnScreenRef.current) return;
           const { width, height } = entry.contentRect;
-          if (width === size.width && height === size.height) return
+          if (width === dimension.width && height === dimension.height) return
 
-          setSize({ width, height });
+          setDimension({ width, height });
         }
       });
 
@@ -101,7 +83,7 @@ const MediaContainer = forwardRef(
       if (typeof ref === 'function') {
         ref(node);
       } else if (ref) {
-        (ref as React.MutableRefObject<HTMLElement | null>).current = node;
+        (ref as React.RefObject<HTMLElement | null>).current = node;
       }
     };
 
@@ -119,12 +101,8 @@ const MediaContainer = forwardRef(
       return () => intersectionObserver.disconnect();
     }, []);
 
-    useEffect(() => {
-      // console.log('widht', size.width)
-    }, [size.width])
-
     return (
-      <MediaContainerContext.Provider value={size}>
+      <MediaContainerContext.Provider value={dimension}>
         <Component
           ref={setRefs}
           className={className}
