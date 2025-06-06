@@ -3,6 +3,7 @@ import { ComponentProps, ElementType, ForwardedRef, forwardRef, ReactNode, RefOb
 import MediaContainerContext from "./context";
 import { ContainerDimensions } from "../BatchMediaContainer/types";
 import _ from "lodash";
+import { useMediaContainer, useMediaContainerNewObserver } from "./hooks";
 
 export type ContainerMediaPropsType<T extends ElementType> = {
   id?: string | number;
@@ -32,14 +33,8 @@ const MediaContainer = forwardRef(
       ...rest
     } = props;
 
-    const [dimension, setDimension] = useState<ContainerDimensions>({ width: 0, height: 0 });
-    const containerRef = useRef<HTMLElement>(null);
-    const observerRef = useRef<ResizeObserver>(null);
-
-    // isOnScreen?
-    const [isOnScreen, setIsOnScreen] = useState(false);
-    const isOnScreenRef = useRef(true);
-    isOnScreenRef.current = isOnScreen;
+    const { ref: containerRef, dimension } = useMediaContainer({ ref })
+    // const { ref: containerRef, dimension } = useMediaContainerNewObserver({ ref });
 
     const Component = as || 'div';
     const containerName = id ? id.toString() : 'random'; // implement random uuid
@@ -52,59 +47,10 @@ const MediaContainer = forwardRef(
       ...incomingStyles,
     }
 
-    useEffect(() => {
-      if (!containerRef.current) return;
-
-      // Initialize ResizeObserver
-      observerRef.current = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          if (!isOnScreenRef.current) return;
-          const { width, height } = entry.contentRect;
-          if (width === dimension.width && height === dimension.height) return
-
-          setDimension({ width, height });
-        }
-      });
-
-      // Start observing
-      observerRef.current.observe(containerRef.current);
-
-      // Cleanup
-      return () => {
-        if (observerRef.current) {
-          observerRef.current.disconnect();
-        }
-      };
-    }, [isOnScreen]);
-
-    const setRefs = (node: HTMLElement | null) => {
-      containerRef.current = node;
-
-      if (typeof ref === 'function') {
-        ref(node);
-      } else if (ref) {
-        (ref as React.RefObject<HTMLElement | null>).current = node;
-      }
-    };
-
-    useEffect(() => {
-      if (!containerRef.current) return;
-
-      const intersectionObserver = new IntersectionObserver(
-        ([entry]) => {
-          setIsOnScreen(entry.isIntersecting);
-        },
-        { threshold: 0.01 }
-      );
-
-      intersectionObserver.observe(containerRef.current);
-      return () => intersectionObserver.disconnect();
-    }, []);
-
     return (
       <MediaContainerContext.Provider value={dimension}>
         <Component
-          ref={setRefs}
+          ref={containerRef}
           className={className}
           style={style}
           {...rest}
