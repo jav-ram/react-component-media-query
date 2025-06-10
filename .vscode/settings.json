@@ -1,0 +1,7 @@
+{
+	"biome.suggestInstallingGlobally": false,
+	"biome.enabled": false,
+	"biome.lsp.bin": null,
+	"editor.formatOnSave": true,
+	"notebook.formatOnSave.enabled": true
+}

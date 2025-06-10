@@ -33,7 +33,7 @@ const Row = ({ rowIndex }: RowPropsType) => {
     <>
       {cells.map((size, index) => (
         <MediaContainer size={size} id={`row-${rowIndex}`} ref={containerRef} as={Grid}>
-          <Item id={`${rowIndex}-${index}`} size={size} />
+          <Item id={`${rowIndex}-${index}`} />
         </MediaContainer >
       ))}
     </>
